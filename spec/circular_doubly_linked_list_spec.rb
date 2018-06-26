@@ -29,6 +29,15 @@ RSpec.describe CircularDoublyLinkedList do
       expect(list).to contain_exactly(node)
     end
 
+    it 'sets next and prev on the only node in a list' do
+      list = described_class.new
+      node = described_class::Node.new('foo')
+
+      list.insert(node)
+
+      expect(node.right).to eq(list.sentinel)
+    end
+
     it 'sets the node as the head of an empty list' do
       list = described_class.new
       node = described_class::Node.new('foo')
@@ -105,6 +114,7 @@ RSpec.describe CircularDoublyLinkedList do
       expect(list).to be_empty
       expect(list.head).to be_nil
       expect(list.tail).to be_nil
+      expect(list.to_a).to eq([])
     end
 
     it 'removes a node from the tail of a non-empty list' do
@@ -135,6 +145,40 @@ RSpec.describe CircularDoublyLinkedList do
       expect(list).to contain_exactly(node, node3)
       expect(list.tail).to eq(node)
       expect(list.head).to eq(node3)
+    end
+
+    it 'can remove all nodes from a non-empty list' do
+      list = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      node3 = described_class::Node.new('baz')
+
+      list.insert(node)
+      list.insert(node2)
+      list.insert(node3)
+      list.delete(node2)
+      list.delete(node)
+      list.delete(node3)
+
+      expect(list).to be_empty
+      expect(list.head).to be_nil
+      expect(list.tail).to be_nil
+      expect(list.to_a).to eq([])
+    end
+
+    it 'does not alter the pointers of the deleted node' do
+      list = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      node3 = described_class::Node.new('baz')
+
+      list.insert(node)
+      list.insert(node2)
+      list.insert(node3)
+      list.delete(node2)
+
+      expect(node2.next).to eq(node)
+      expect(node2.prev).to eq(node3)
     end
   end
 
@@ -176,23 +220,23 @@ RSpec.describe CircularDoublyLinkedList do
     end
   end
 
-  # describe '#concat' do
-  #   it 'combines two lists' do
-  #     list = described_class.new
-  #     list2 = described_class.new
-  #     node = described_class::Node.new('foo')
-  #     node2 = described_class::Node.new('bar')
-  #     node3 = described_class::Node.new('baz')
-  #     node4 = described_class::Node.new('quux')
-  #     list.insert(node)
-  #     list.insert(node2)
-  #     list2.insert(node3)
-  #     list2.insert(node4)
+  describe '#concat' do
+    it 'combines two lists' do
+      list = described_class.new
+      list2 = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      node3 = described_class::Node.new('baz')
+      node4 = described_class::Node.new('quux')
+      list.insert(node)
+      list.insert(node2)
+      list2.insert(node3)
+      list2.insert(node4)
 
-  #     list.concat(list2)
+      list.concat(list2)
 
-  #     expect(list.to_a).to contain_exactly(node, node2, node3, node4)
-  #   end
-  # end
+      expect(list.to_a).to contain_exactly(node, node2, node3, node4)
+    end
+  end
 end
 

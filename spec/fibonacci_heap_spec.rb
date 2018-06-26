@@ -14,6 +14,70 @@ RSpec.describe FibonacciHeap do
     expect(heap.min).to be_nil
   end
 
+  it 'can move child_list from nodes to the root list' do
+    heap = described_class.new
+    parent = described_class::Node.new('parent')
+    child = described_class::Node.new('child')
+    parent.child_list.insert(child)
+    child.p = parent
+
+    heap.insert(parent)
+    parent.child_list.delete(child)
+    heap.root_list.insert(child)
+    child.p = nil
+
+    expect(heap.root_list).to include(child)
+    expect(parent.child_list).not_to include(child)
+  end
+
+  it 'can move roots to the child_list of a node' do
+    heap = described_class.new
+    root = described_class::Node.new('root')
+    parent = described_class::Node.new('parent')
+
+    heap.insert(root)
+    heap.insert(parent)
+
+    heap.root_list.delete(root)
+    parent.child_list.insert(root)
+    root.p = parent
+
+    expect(heap.root_list).to contain_exactly(parent)
+    expect(parent.child_list).to contain_exactly(root)
+  end
+
+  it 'can have nodes removed from the root list' do
+    heap = described_class.new
+    root = described_class::Node.new('root')
+
+    heap.insert(root)
+    heap.root_list.delete(root)
+
+    expect(heap.root_list).to be_empty
+    expect(heap.root_list.to_a).to eq([])
+  end
+
+  it 'distinguishes a single root by linking together left and right' do
+    heap = described_class.new
+    root = described_class::Node.new('root')
+
+    heap.insert(root)
+
+    expect(root.left).to eq(root.right)
+  end
+
+  it 'does not link together left and right for multiple roots' do
+    heap = described_class.new
+    root = described_class::Node.new('foo')
+    root2 = described_class::Node.new('foo')
+
+    heap.insert(root)
+    heap.insert(root2)
+
+    expect(root.left).not_to eq(root.right)
+    expect(root2.left).not_to eq(root2.right)
+  end
+
   describe '#insert' do
     it 'adds the node to the root list' do
       heap = described_class.new
@@ -21,7 +85,7 @@ RSpec.describe FibonacciHeap do
 
       heap.insert(node)
 
-      expect(heap).to include(node)
+      expect(heap.root_list).to include(node)
     end
 
     it 'sets the node to min for an empty heap' do
@@ -40,6 +104,17 @@ RSpec.describe FibonacciHeap do
 
       heap.insert(node2)
       heap.insert(node)
+
+      expect(heap.min).to eq(node2)
+    end
+
+    it 'overrides min if the new node is smallest' do
+      heap = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+
+      heap.insert(node)
+      heap.insert(node2)
 
       expect(heap.min).to eq(node2)
     end
@@ -70,18 +145,6 @@ RSpec.describe FibonacciHeap do
       heap.insert(node2)
 
       expect(heap.pop).to eq(node)
-    end
-
-    it 'removes the smallest node from the heap' do
-      heap = described_class.new
-      node = described_class::Node.new(1)
-      node2 = described_class::Node.new(2)
-
-      heap.insert(node)
-      heap.insert(node2)
-      heap.pop
-
-      expect(heap).to contain_exactly(node2)
     end
 
     it 'works with more than two nodes' do
@@ -171,7 +234,8 @@ RSpec.describe FibonacciHeap do
 
       heap.delete(node)
 
-      expect(heap).not_to include(node)
+      expect(heap.pop).to eq(node2)
+      expect(heap.pop).to be_nil
     end
   end
 end
