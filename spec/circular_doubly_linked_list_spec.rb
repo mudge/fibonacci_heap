@@ -58,7 +58,7 @@ RSpec.describe CircularDoublyLinkedList do
       expect(list).to contain_exactly(node, node2)
     end
 
-    it 'sets the new node as the new tail in a non-empty list' do
+    it 'sets the new node as the new head in a non-empty list' do
       list = described_class.new
       node = described_class::Node.new('foo')
       node2 = described_class::Node.new('bar')
@@ -66,10 +66,10 @@ RSpec.describe CircularDoublyLinkedList do
       list.insert(node)
       list.insert(node2)
 
-      expect(list.tail).to eq(node2)
+      expect(list.head).to eq(node2)
     end
 
-    it 'retains the existing head in a non-empty list' do
+    it 'retains the existing tail in a non-empty list' do
       list = described_class.new
       node = described_class::Node.new('foo')
       node2 = described_class::Node.new('bar')
@@ -77,7 +77,7 @@ RSpec.describe CircularDoublyLinkedList do
       list.insert(node)
       list.insert(node2)
 
-      expect(list.head).to eq(node)
+      expect(list.tail).to eq(node)
     end
 
     it 'inserts into a list with more than two nodes' do
@@ -119,8 +119,6 @@ RSpec.describe CircularDoublyLinkedList do
       expect(list).to contain_exactly(node2)
       expect(list.head).to eq(node2)
       expect(list.tail).to eq(node2)
-      expect(node2.next).to eq(node2)
-      expect(node2.prev).to eq(node2)
     end
 
     it 'removes a node from the middle of a non-empty list' do
@@ -135,12 +133,8 @@ RSpec.describe CircularDoublyLinkedList do
       list.delete(node2)
 
       expect(list).to contain_exactly(node, node3)
-      expect(list.head).to eq(node)
-      expect(list.tail).to eq(node3)
-      expect(node.next).to eq(node3)
-      expect(node.prev).to eq(node3)
-      expect(node3.next).to eq(node)
-      expect(node3.prev).to eq(node)
+      expect(list.tail).to eq(node)
+      expect(list.head).to eq(node3)
     end
   end
 
@@ -166,7 +160,7 @@ RSpec.describe CircularDoublyLinkedList do
       list.insert(node)
       list.insert(node2)
 
-      expect { |b| list.each(&b) }.to yield_successive_args(node, node2)
+      expect { |b| list.each(&b) }.to yield_successive_args(node2, node)
     end
 
     it 'yields more than two nodes' do
@@ -178,7 +172,7 @@ RSpec.describe CircularDoublyLinkedList do
       list.insert(node2)
       list.insert(node3)
 
-      expect { |b| list.each(&b) }.to yield_successive_args(node, node2, node3)
+      expect { |b| list.each(&b) }.to yield_successive_args(node3, node2, node)
     end
   end
 

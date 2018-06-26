@@ -25,6 +25,18 @@ class CircularDoublyLinkedList
     @sentinel = Node.new(nil)
   end
 
+  def head
+    return if empty?
+
+    sentinel.next
+  end
+
+  def tail
+    return if empty?
+
+    sentinel.prev
+  end
+
   def empty?
     sentinel.next == sentinel
   end
