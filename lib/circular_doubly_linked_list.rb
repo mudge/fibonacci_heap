@@ -19,60 +19,42 @@ class CircularDoublyLinkedList
     end
   end
 
-  attr_accessor :head, :tail
+  attr_accessor :sentinel
 
   def initialize
-    @head = nil
-    @tail = nil
+    @sentinel = Node.new(nil)
   end
 
   def empty?
-    !head
+    sentinel.next == sentinel
   end
 
   def insert(x)
-    if !head
-      x.next = x.prev = x
-      self.head = x
-      self.tail = head
-    else
-      x.prev = tail
-      tail.next = x
-      head.prev = x
-      x.next = head
-      self.tail = x
-    end
+    x.next = sentinel.next
+    sentinel.next.prev = x
+    sentinel.next = x
+    x.prev = sentinel
   end
 
   def delete(x)
-    if head == x
-      if head == tail
-        self.head = nil
-        self.tail = nil
-      else
-        self.head = head.next
-        head.prev = tail
-        tail.next = head
-      end
-    elsif tail == x
-      self.tail = tail.prev
-      tail.next = head
-      head.prev = tail
-    else
-      x.prev.next = x.next
-      x.next.prev = x.prev
-    end
+    x.prev.next = x.next
+    x.next.prev = x.prev
+  end
+
+  def concat(list)
+    list.sentinel.prev.next = sentinel.next
+    sentinel.next.prev = list.sentinel.prev
+    sentinel.next = list.sentinel.next
+    list.sentinel.prev = sentinel
   end
 
   def each
-    x = head
-    return unless x
+    x = sentinel.next
 
-    loop do
+    while x != sentinel
       yield x
 
       x = x.next
-      break if x == head
     end
   end
 end
