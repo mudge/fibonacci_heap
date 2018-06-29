@@ -64,9 +64,10 @@ class CircularDoublyLinkedList
     x = sentinel.next
 
     while x != sentinel
-      yield x
-
+      current = x
       x = x.next
+
+      yield current
     end
   end
 end

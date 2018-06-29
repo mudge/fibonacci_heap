@@ -218,6 +218,19 @@ RSpec.describe CircularDoublyLinkedList do
 
       expect { |b| list.each(&b) }.to yield_successive_args(node3, node2, node)
     end
+
+    it 'is not affected by changes to the node while iterating' do
+      list = described_class.new
+      list2 = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      node3 = described_class::Node.new('baz')
+      list.insert(node)
+      list.insert(node2)
+      list2.insert(node3)
+
+      expect { |b| list.each { |n| list2.insert(n); b.to_proc.call(n) } }.to yield_successive_args(node2, node)
+    end
   end
 
   describe '#concat' do

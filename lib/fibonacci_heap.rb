@@ -53,7 +53,7 @@ class FibonacciHeap
 
     if z
       # For each child x of z
-      z.child_list.to_a.each do |x|
+      z.child_list.each do |x|
 
         # Add x to the root list of H
         root_list.insert(x)
@@ -112,7 +112,7 @@ class FibonacciHeap
   def consolidate
     degrees = []
 
-    root_list.to_a.each do |w|
+    root_list.each do |w|
       x = w
       d = x.degree
 
