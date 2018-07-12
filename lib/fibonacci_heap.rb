@@ -89,6 +89,8 @@ class FibonacciHeap
     end
 
     self.n += 1
+
+    x
   end
 
   # Unite the given Fibonacci heap into this one, returning a new heap.
@@ -170,6 +172,8 @@ class FibonacciHeap
     end
 
     self.min = x if x.key < min.key
+
+    x
   end
 
   # Delete a node from the heap.

@@ -28,6 +28,7 @@ bar = FibonacciHeap::Node.new(0, 'bar')
 heap.insert(foo)
 heap.insert(bar)
 heap.pop
+#=> #<FibonacciHeap::Node key=0 value="bar">
 ```
 
 ## API Documentation
@@ -45,6 +46,8 @@ heap.pop
   * [`#delete(x)`](#fibonacciheapdeletex)
   * [`Node`](#fibonacciheapnode)
     * [`new(key[, value])`](#fibonacciheapnodenewkey-value)
+    * [`key`](#fibonacciheapnodekey)
+    * [`value`](#fibonacciheapnodevalue)
   * [`InvalidKeyError`](#fibonacciheapinvalidkeyerror)
 
 ### `FibonacciHeap`
@@ -59,6 +62,7 @@ that are min-heap ordered.
 
 ```ruby
 heap = FibonacciHeap.new
+#=> #<FibonacciHeap n=0 min=nil>
 ```
 
 Return a new, empty `FibonacciHeap` instance.
@@ -117,6 +121,7 @@ heap2 = FibonacciHeap.new
 heap2.insert(FibonacciHeap::Node.new(2, 'bar'))
 
 heap3 = heap.concat(heap2)
+#=> #<FibonacciHeap n=2 min=#<FibonacciHeap::Node key=1 value="foo">>
 
 heap3.pop
 #=> #<FibonacciHeap::Node key=1 value="foo" ...>
@@ -146,6 +151,7 @@ heap = FibonacciHeap.new
 node = FibonacciHeap::Node.new(1, 'foo')
 heap.insert(node)
 heap.decrease_key(node, 0)
+#=> #<FibonacciHeap::Node key=0 value="foo">
 ```
 
 Decrease the key of the given `FibonacciHeap::Node` `x` to the new given key `k`.
@@ -161,6 +167,7 @@ heap = FibonacciHeap.new
 node = FibonacciHeap::Node.new(1, 'foo')
 heap.insert(node)
 heap.delete(node)
+#=> #<FibonacciHeap::Node key=-Infinity value="foo">
 ```
 
 Deletes the given `FibonacciHeap::Node` `x` from the heap.
@@ -177,12 +184,34 @@ Used internally to form both min-heap ordered trees and circular, doubly linked 
 
 ```ruby
 node = FibonacciHeap::Node.new(1)
+#=> #<FibonacciHeap::Node key=1 value=1>
 node = FibonacciHeap::Node.new(1, 'foo')
+#=> #<FibonacciHeap::Node key=1 value="foo">
 ```
 
 Return a new `FibonacciHeap::Node` with the given key `key` and an optional value `value`.
 
 Defaults to using the `key` as the value.
+
+##### `FibonacciHeap::Node#key`
+
+```ruby
+node = FibonacciHeap::Node.new(1, 'foo')
+node.key
+#=> 1
+```
+
+Return the current key of the node.
+
+##### `FibonacciHeap::Node#value`
+
+```ruby
+node = FibonacciHeap::Node.new(1, 'foo')
+node.value
+#=> "foo"
+```
+
+Return the current value of the node.
 
 #### `FibonacciHeap::InvalidKeyError`
 

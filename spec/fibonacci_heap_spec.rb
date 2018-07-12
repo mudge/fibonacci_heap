@@ -193,6 +193,13 @@ RSpec.describe FibonacciHeap do
 
       expect(heap.n).to eq(1)
     end
+
+    it 'returns the inserted node' do
+      heap = described_class.new
+      node = described_class::Node.new('foo')
+
+      expect(heap.insert(node)).to eq(node)
+    end
   end
 
   describe '#pop' do
@@ -288,6 +295,14 @@ RSpec.describe FibonacciHeap do
 
       expect(heap.min).to eq(node2)
     end
+
+    it 'returns the decreased node' do
+      heap = described_class.new
+      node = described_class::Node.new(2)
+      heap.insert(node)
+
+      expect(heap.decrease_key(node, 1)).to eq(node)
+    end
   end
 
   describe '#delete' do
@@ -302,6 +317,14 @@ RSpec.describe FibonacciHeap do
 
       expect(heap.pop).to eq(node2)
       expect(heap.pop).to be_nil
+    end
+
+    it 'returns the deleted node' do
+      heap = described_class.new
+      node = described_class::Node.new(1)
+      heap.insert(node)
+
+      expect(heap.delete(node)).to eq(node)
     end
   end
 
