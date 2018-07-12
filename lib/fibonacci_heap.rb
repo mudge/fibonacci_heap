@@ -179,7 +179,7 @@ class FibonacciHeap
   #
   # Corresponds to the Fib-Heap-Delete(H, x) procedure.
   def delete(x)
-    decrease_key(x, -Float::INFINITY)
+    decrease_key(x, -1.0 / 0.0)
     pop
   end
 
