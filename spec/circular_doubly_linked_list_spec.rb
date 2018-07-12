@@ -1,24 +1,24 @@
 require 'circular_doubly_linked_list'
 
-RSpec.describe CircularDoublyLinkedList::Node do
-  describe '#next' do
-    it 'is initialized to itself by default' do
-      node = described_class.new('foo')
-
-      expect(node.next).to eq(node)
-    end
-  end
-
-  describe '#prev' do
-    it 'is initialized to itself by default' do
-      node = described_class.new('foo')
-
-      expect(node.prev).to eq(node)
-    end
-  end
-end
-
 RSpec.describe CircularDoublyLinkedList do
+  describe described_class::Node do
+    describe '#next' do
+      it 'is initialized to itself by default' do
+        node = described_class.new('foo')
+
+        expect(node.next).to eq(node)
+      end
+    end
+
+    describe '#prev' do
+      it 'is initialized to itself by default' do
+        node = described_class.new('foo')
+
+        expect(node.prev).to eq(node)
+      end
+    end
+  end
+
   describe '#insert' do
     it 'inserts the node into an empty list' do
       list = described_class.new
@@ -35,7 +35,7 @@ RSpec.describe CircularDoublyLinkedList do
 
       list.insert(node)
 
-      expect(node.right).to eq(list.sentinel)
+      expect(node.next).to eq(list.sentinel)
     end
 
     it 'sets the node as the head of an empty list' do
@@ -229,7 +229,12 @@ RSpec.describe CircularDoublyLinkedList do
       list.insert(node2)
       list2.insert(node3)
 
-      expect { |b| list.each { |n| list2.insert(n); b.to_proc.call(n) } }.to yield_successive_args(node2, node)
+      expect { |b|
+        list.each do |n|
+          list2.insert(n)
+          b.to_proc.call(n)
+        end
+      }.to yield_successive_args(node2, node)
     end
   end
 
@@ -248,7 +253,33 @@ RSpec.describe CircularDoublyLinkedList do
 
       list.concat(list2)
 
-      expect(list.to_a).to contain_exactly(node, node2, node3, node4)
+      expect(list).to contain_exactly(node, node2, node3, node4)
+    end
+
+    it 'combines an empty list a non-empty one' do
+      list = described_class.new
+      list2 = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      list2.insert(node)
+      list2.insert(node2)
+
+      list.concat(list2)
+
+      expect(list).to contain_exactly(node, node2)
+    end
+
+    it 'combines a non-empty list with an empty one' do
+      list = described_class.new
+      list2 = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('bar')
+      list.insert(node)
+      list.insert(node2)
+
+      list.concat(list2)
+
+      expect(list).to contain_exactly(node, node2)
     end
   end
 end

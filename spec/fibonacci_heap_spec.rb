@@ -1,7 +1,16 @@
 require 'fibonacci_heap'
-require 'pry'
 
 RSpec.describe FibonacciHeap do
+  describe described_class::Node do
+    describe '#inspect' do
+      it 'lists the current key and value' do
+        node = described_class.new(1, 'foo')
+
+        expect(node.inspect).to eq('#<FibonacciHeap::Node key=1 value="foo">')
+      end
+    end
+  end
+
   it 'initializes n to 0' do
     heap = described_class.new
 
@@ -76,6 +85,63 @@ RSpec.describe FibonacciHeap do
 
     expect(root.left).not_to eq(root.right)
     expect(root2.left).not_to eq(root2.right)
+  end
+
+  describe '#inspect' do
+    it 'lists the size and min of the heap' do
+      heap = described_class.new
+      heap.insert(described_class::Node.new(1, 'foo'))
+
+      expect(heap.inspect).to eq('#<FibonacciHeap n=1 min=#<FibonacciHeap::Node key=1 value="foo">>')
+    end
+  end
+
+  describe '#n' do
+    it 'returns the size of the heap' do
+      heap = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('foo')
+
+      heap.insert(node)
+      heap.insert(node2)
+
+      expect(heap.n).to eq(2)
+    end
+
+    it 'is aliased to #size' do
+      heap = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('foo')
+
+      heap.insert(node)
+      heap.insert(node2)
+
+      expect(heap.size).to eq(2)
+    end
+
+    it 'is aliased to #length' do
+      heap = described_class.new
+      node = described_class::Node.new('foo')
+      node2 = described_class::Node.new('foo')
+
+      heap.insert(node)
+      heap.insert(node2)
+
+      expect(heap.length).to eq(2)
+    end
+  end
+
+  describe '#min' do
+    it 'returns the smallest node in the heap' do
+      heap = described_class.new
+      node = described_class::Node.new(10)
+      node2 = described_class::Node.new(0)
+
+      heap.insert(node)
+      heap.insert(node2)
+
+      expect(heap.min).to eq(node2)
+    end
   end
 
   describe '#insert' do
@@ -236,6 +302,23 @@ RSpec.describe FibonacciHeap do
 
       expect(heap.pop).to eq(node2)
       expect(heap.pop).to be_nil
+    end
+  end
+
+  describe '#concat' do
+    it 'unite the given heap with this one' do
+      heap = described_class.new
+      node = described_class::Node.new(1)
+      heap2 = described_class.new
+      node2 = described_class::Node.new(2)
+      heap.insert(node)
+      heap2.insert(node2)
+
+      heap3 = heap.concat(heap2)
+
+      expect(heap3.pop).to eq(node)
+      expect(heap3.pop).to eq(node2)
+      expect(heap3.pop).to be_nil
     end
   end
 end
