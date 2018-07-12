@@ -1,4 +1,4 @@
-# Fibonacci Heap
+# Fibonacci Heap [![Build Status](https://travis-ci.org/mudge/fibonacci_heap.svg?branch=master)](https://travis-ci.org/mudge/fibonacci_heap)
 
 A Ruby implementation of the [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap) data structure ideal for use as a priority queue with [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue).
 
