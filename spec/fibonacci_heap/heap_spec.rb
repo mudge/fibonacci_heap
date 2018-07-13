@@ -58,6 +58,21 @@ module FibonacciHeap
       end
     end
 
+    describe '#empty?' do
+      it 'returns true if the heap has no nodes' do
+        heap = described_class.new
+
+        expect(heap).to be_empty
+      end
+
+      it 'returns false if the heap has any nodes' do
+        heap = described_class.new
+        heap.insert(Node.new('foo'))
+
+        expect(heap).to_not be_empty
+      end
+    end
+
     describe '#min' do
       it 'returns the smallest node in the heap' do
         heap = described_class.new

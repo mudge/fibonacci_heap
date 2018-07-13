@@ -26,6 +26,10 @@ module FibonacciHeap
       @min = nil
     end
 
+    def empty?
+      n.zero?
+    end
+
     # Insert a new node with an optional key into the heap.
     #
     # The node must be compatible with a FibonacciHeap::Node.

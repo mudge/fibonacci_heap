@@ -38,6 +38,7 @@ heap.pop
   * [`#n`](#fibonacciheapheapn)
   * [`#size`](#fibonacciheapheapn)
   * [`#length`](#fibonacciheapheapn)
+  * [`#empty?`](#fibonacciheapheapempty)
   * [`#min`](#fibonacciheapheapmin)
   * [`#insert(x[, k])`](#fibonacciheapheapinsertx-k)
   * [`#concat(h2)`](#fibonacciheapheapconcath2)
@@ -83,6 +84,16 @@ heap.length
 Return the current number of nodes in the heap.
 
 Aliased to `size` and `length`.
+
+#### `FibonacciHeap::Heap#empty?`
+
+```ruby
+heap = FibonacciHeap::Heap.new
+heap.empty?
+#=> true
+```
+
+Returns whether or not the heap is empty.
 
 #### `FibonacciHeap::Heap#min`
 
