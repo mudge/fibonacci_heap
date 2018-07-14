@@ -23,6 +23,42 @@ module FibonacciHeap
       end
     end
 
+    describe '#clear' do
+      it 'empties the heap' do
+        heap = described_class.new
+        heap.insert(Node.new(1, 'foo'))
+
+        heap.clear
+
+        expect(heap).to be_empty
+      end
+
+      it 'clears the min node' do
+        heap = described_class.new
+        heap.insert(Node.new(1, 'foo'))
+
+        heap.clear
+
+        expect(heap.min).to be_nil
+      end
+
+      it 'empties the root list' do
+        heap = described_class.new
+        heap.insert(Node.new(1, 'foo'))
+
+        heap.clear
+
+        expect(heap.root_list).to be_empty
+      end
+
+      it 'returns the emptied heap' do
+        heap = described_class.new
+        heap.insert(Node.new(1, 'foo'))
+
+        expect(heap.clear).to eq(heap)
+      end
+    end
+
     describe '#n' do
       it 'returns the size of the heap' do
         heap = described_class.new
@@ -224,6 +260,28 @@ module FibonacciHeap
         expect(root.left).not_to eq(root.right)
         expect(root2.left).not_to eq(root2.right)
       end
+
+      it 'removes the last node in the heap' do
+        heap = described_class.new
+        root = Node.new('foo')
+        heap.insert(root)
+
+        expect(heap.pop).to eq(root)
+        expect(heap.pop).to be_nil
+        expect(heap.min).to be_nil
+      end
+
+      it 'can have nodes inserted after being emptied' do
+        heap = described_class.new
+        root = Node.new('foo')
+        heap.insert(root)
+        heap.pop
+        root2 = Node.new('bar')
+        heap.insert(root2)
+
+        expect(heap.pop).to eq(root2)
+        expect(heap.pop).to be_nil
+      end
     end
 
     describe '#decrease_key' do
@@ -292,7 +350,7 @@ module FibonacciHeap
     end
 
     describe '#concat' do
-      it 'unite the given heap with this one' do
+      it 'unites the given heap with this one' do
         heap = described_class.new
         node = Node.new(1)
         heap2 = described_class.new
@@ -304,6 +362,39 @@ module FibonacciHeap
 
         expect(heap3.pop).to eq(node)
         expect(heap3.pop).to eq(node2)
+        expect(heap3.pop).to be_nil
+      end
+
+      it 'unites an empty heap with a non-empty heap' do
+        heap = described_class.new
+        heap2 = described_class.new
+        node = Node.new(1)
+        heap2.insert(node)
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.pop).to eq(node)
+        expect(heap3.pop).to be_nil
+      end
+
+      it 'unites a non-empty heap with an empty heap' do
+        heap = described_class.new
+        heap2 = described_class.new
+        node = Node.new(1)
+        heap.insert(node)
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.pop).to eq(node)
+        expect(heap3.pop).to be_nil
+      end
+
+      it 'unites two empty heaps' do
+        heap = described_class.new
+        heap2 = described_class.new
+
+        heap3 = heap.concat(heap2)
+
         expect(heap3.pop).to be_nil
       end
     end

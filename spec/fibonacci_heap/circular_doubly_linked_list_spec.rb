@@ -239,7 +239,7 @@ module FibonacciHeap
         expect(list).to contain_exactly(node, node2, node3, node4)
       end
 
-      it 'combines an empty list a non-empty one' do
+      it 'combines an empty list with a non-empty one' do
         list = described_class.new
         list2 = described_class.new
         node = Node.new('foo')
@@ -250,6 +250,18 @@ module FibonacciHeap
         list.concat(list2)
 
         expect(list).to contain_exactly(node, node2)
+      end
+
+      it 'removes any reference to the other list sentinel' do
+        list = described_class.new
+        list2 = described_class.new
+        node = Node.new('foo')
+        list2.insert(node)
+
+        list.concat(list2)
+
+        expect(node.next).to eq(list.sentinel)
+        expect(node.prev).to eq(list.sentinel)
       end
 
       it 'combines a non-empty list with an empty one' do

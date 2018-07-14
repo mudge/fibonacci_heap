@@ -26,6 +26,7 @@ module FibonacciHeap
       @min = nil
     end
 
+    # Return whether or not this heap is empty.
     def empty?
       n.zero?
     end
@@ -65,15 +66,16 @@ module FibonacciHeap
     # Unite the given Fibonacci heap into this one, returning a new heap.
     #
     # Note that uniting the heaps will mutate their root lists, destroying them
-    # both so attempting to use them has undefined behaviour.
+    # both so attempting to use them after uniting has undefined behaviour.
     #
     # Corresponds to the Fib-Heap-Union(H1, H2) procedure.
     def concat(h2)
       h = self.class.new
       h.min = min
 
-      h.root_list = root_list
-      h.root_list.concat(h2.root_list)
+      h.root_list = CircularDoublyLinkedList.new
+      h.root_list.concat(root_list) unless empty?
+      h.root_list.concat(h2.root_list) unless h2.empty?
 
       h.min = h2.min if !min || (h2.min && h2.min.key < min.key)
 
@@ -90,33 +92,29 @@ module FibonacciHeap
     # Corresponds to the Fib-Heap-Extract-Min(H) procedure.
     def pop
       z = min
+      return unless z
 
-      if z
-        # For each child x of z
-        z.child_list.each do |x|
-
-          # Add x to the root list of H
-          root_list.insert(x)
-          x.p = nil
-        end
-
-        # Remove z from the root list of H
-        root_list.delete(z)
-
-        # Is z the only node on the root list?
-        if z.right == z.left
-          # Empty the heap
-          self.min = nil
-          self.root_list = CircularDoublyLinkedList.new
-        else
-          # Set min to another root
-          self.min = root_list.head
-
-          consolidate
-        end
-
-        self.n -= 1
+      # For each child x of z
+      z.child_list.each do |x|
+        # Add x to the root list of H
+        root_list.insert(x)
+        x.p = nil
       end
+
+      # Remove z from the root list of H
+      root_list.delete(z)
+
+      # Was z the only node on the root list?
+      if z.right == z.left
+        self.min = nil
+      else
+        # Set min to another root
+        self.min = root_list.head
+
+        consolidate
+      end
+
+      self.n -= 1
 
       z
     end
@@ -156,6 +154,15 @@ module FibonacciHeap
       pop
     end
 
+    # Remove all nodes from the heap, emptying it.
+    def clear
+      self.root_list = CircularDoublyLinkedList.new
+      self.min = nil
+      self.n = 0
+
+      self
+    end
+
     def inspect
       %(#<#{self.class} n=#{n} min=#{min.inspect}>)
     end
@@ -164,7 +171,8 @@ module FibonacciHeap
 
     # Corresponds to the Consolidate(H) procedure.
     def consolidate
-      degrees = []
+      # let A[0..D(H.n)] be a new array
+      degrees = Array.new(Math.log(n, 2).floor + 1)
 
       root_list.each do |w|
         x = w
@@ -186,8 +194,8 @@ module FibonacciHeap
       end
 
       # Empty the root list
-      self.min = nil
       self.root_list = CircularDoublyLinkedList.new
+      self.min = nil
 
       # Reconstruct the root list from the array A
       degrees.each do |root|
@@ -207,6 +215,7 @@ module FibonacciHeap
     def link(y, x)
       # remove y from the root list of H
       root_list.delete(y)
+
       # make y a child of x, incrementing x.degree
       x.child_list.insert(y)
       x.degree += 1

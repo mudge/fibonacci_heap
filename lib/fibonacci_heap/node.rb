@@ -1,5 +1,3 @@
-require 'fibonacci_heap/circular_doubly_linked_list'
-
 module FibonacciHeap
   # A single node in a Fibonacci Heap.
   #

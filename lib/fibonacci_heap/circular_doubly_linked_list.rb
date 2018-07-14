@@ -66,7 +66,7 @@ module FibonacciHeap
       list.sentinel.prev.next = sentinel.next
       sentinel.next.prev = list.sentinel.prev
       sentinel.next = list.sentinel.next
-      list.sentinel.prev = sentinel
+      list.sentinel.next.prev = sentinel
     end
 
     # Yield each element of this list.
