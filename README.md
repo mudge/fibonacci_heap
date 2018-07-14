@@ -2,7 +2,7 @@
 
 A Ruby implementation of the [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap) data structure ideal for use as a priority queue with [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue).
 
-**Current version:** 0.1.0  
+**Current version:** 0.2.0  
 **Supported Ruby versions:** 1.8.7, 1.9.2, 1.9.3, 2.0, 2.1, 2.2, 2.3
 
 ## Installation
