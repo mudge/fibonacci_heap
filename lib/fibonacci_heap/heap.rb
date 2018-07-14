@@ -172,7 +172,8 @@ module FibonacciHeap
     # Corresponds to the Consolidate(H) procedure.
     def consolidate
       # let A[0..D(H.n)] be a new array
-      degrees = Array.new(Math.log(n, 2).floor + 1)
+      max_degree = (Math.log(n) / Math.log(2)).floor
+      degrees = Array.new(max_degree + 1)
 
       root_list.each do |w|
         x = w
