@@ -8,13 +8,13 @@ A Ruby implementation of the [Fibonacci heap](https://en.wikipedia.org/wiki/Fibo
 ## Installation
 
 ```
-gem install fibonacci_heap -v '~> 0.1'
+gem install fibonacci_heap -v '~> 0.2'
 ```
 
 Or, in your `Gemfile`:
 
 ```ruby
-gem 'fibonacci_heap', '~> 0.1'
+gem 'fibonacci_heap', '~> 0.2'
 ```
 
 ## Usage
