@@ -108,7 +108,7 @@ heap = FibonacciHeap::Heap.new
 heap.insert(FibonacciHeap::Node.new(1))
 heap.insert(FibonacciHeap::Node.new(2))
 heap.min
-#=> #<FibonacciHeap::Node key=1 ...>
+#=> #<FibonacciHeap::Node key=1 value=1>
 ```
 
 Return the smallest [`FibonacciHeap::Node`](#fibonacciheapnode) node in the heap as determined by the node's `key`.
@@ -122,7 +122,9 @@ heap = FibonacciHeap::Heap.new
 node = FibonacciHeap::Node.new(1, 'foo')
 node2 = FibonacciHeap::Node.new(0, 'bar')
 heap.insert(node)
-heap.insert(bar, 100)
+#=> #<FibonacciHeap::Node key=1 value="foo">
+heap.insert(node2, 100)
+#=> #<FibonacciHeap::Node key=100 value="bar">
 ```
 
 Insert the given [`FibonacciHeap::Node`](#fibonacciheapnode) `x` into the heap with an optional key `k`.
@@ -141,9 +143,9 @@ heap3 = heap.concat(heap2)
 #=> #<FibonacciHeap::Heap n=2 min=#<FibonacciHeap::Node key=1 value="foo">>
 
 heap3.pop
-#=> #<FibonacciHeap::Node key=1 value="foo" ...>
+#=> #<FibonacciHeap::Node key=1 value="foo">
 heap3.pop
-#=> #<FibonacciHeap::Node key=2 value="bar" ...>
+#=> #<FibonacciHeap::Node key=2 value="bar">
 ```
 
 Unite the given [`FibonacciHeap::Heap`](#fibonacciheapheap) `h2` with this one in a new [`FibonacciHeap::Heap`](#fibonacciheapheap).
@@ -156,7 +158,7 @@ As this will mutate both collections of rooted trees, attempting to use either t
 heap = FibonacciHeap::Heap.new
 heap.insert(FibonacciHeap::Node.new(1, 'foo'))
 heap.pop
-#=> #<FibonacciHeap::Node key=1 value="foo" ...>
+#=> #<FibonacciHeap::Node key=1 value="foo">
 ```
 
 Remove and return the smallest [`FibonacciHeap::Node`](#fibonacciheapnode) from the heap.
