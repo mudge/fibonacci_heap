@@ -12,13 +12,22 @@ module FibonacciHeap
         expect(list).to contain_exactly(node)
       end
 
-      it 'sets next and prev on the only node in a list' do
+      it 'sets next on the only node in a list' do
         list = described_class.new
         node = Node.new('foo')
 
         list.insert(node)
 
         expect(node.next).to eq(list.sentinel)
+      end
+
+      it 'sets the prev on the only node in a list' do
+        list = described_class.new
+        node = Node.new('foo')
+
+        list.insert(node)
+
+        expect(node.prev).to eq(list.sentinel)
       end
 
       it 'sets the node as the head of an empty list' do
@@ -100,6 +109,26 @@ module FibonacciHeap
         expect(list.to_a).to eq([])
       end
 
+      it 'removes the node from the head of a single-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+
+        list.insert(node)
+        list.delete(node)
+
+        expect(list.sentinel.next).to eq(list.sentinel)
+      end
+
+      it 'removes the node from the tail of a single-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+
+        list.insert(node)
+        list.delete(node)
+
+        expect(list.sentinel.prev).to eq(list.sentinel)
+      end
+
       it 'removes a node from the tail of a non-empty list' do
         list = described_class.new
         node = Node.new('foo')
@@ -170,6 +199,13 @@ module FibonacciHeap
         list = described_class.new
 
         expect(list).to be_empty
+      end
+
+      it 'is false if there are one or more nodes' do
+        list = described_class.new
+        list.insert(Node.new('foo'))
+
+        expect(list).to_not be_empty
       end
     end
 
@@ -275,6 +311,156 @@ module FibonacciHeap
         list.concat(list2)
 
         expect(list).to contain_exactly(node, node2)
+      end
+
+      it 'connects the prev of the head of the new list to the current sentinel' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list2_head.prev).to eq(list.sentinel)
+      end
+
+      it 'connects the tail of the new list to the head of the current' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list2_tail.next).to eq(list_head)
+      end
+
+      it 'connects the prev of the head of the current list to the tail of the new' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list_head.prev).to eq(list2_tail)
+      end
+
+      it 'connects the head of the current list to the head of the new' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list.head).to eq(list2_head)
+      end
+
+      it 'preserves the tail of the current list' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list.tail).to eq(list_tail)
+      end
+
+      it 'uses the tail of the new list if the current is empty' do
+        list = described_class.new
+        list2 = described_class.new
+        list2_tail = Node.new('list2_tail')
+        list2_head = Node.new('list2_head')
+        list2.insert(list2_tail)
+        list2.insert(list2_head)
+
+        list.concat(list2)
+
+        expect(list.tail).to eq(list2_tail)
+      end
+    end
+
+    describe '#head' do
+      it 'returns nil if the list is empty' do
+        list = described_class.new
+
+        expect(list.head).to be_nil
+      end
+
+      it 'returns the only element of a single-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+        list.insert(node)
+
+        expect(list.head).to eq(node)
+      end
+
+      it 'returns the first element of a multiple-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+        list.insert(Node.new('bar'))
+        list.insert(Node.new('baz'))
+        list.insert(node)
+
+        expect(list.head).to eq(node)
+      end
+    end
+
+    describe '#tail' do
+      it 'returns nil if the list is empty' do
+        list = described_class.new
+
+        expect(list.tail).to be_nil
+      end
+
+      it 'returns the only element of a single-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+        list.insert(node)
+
+        expect(list.tail).to eq(node)
+      end
+
+      it 'returns the last element of a multiple-element list' do
+        list = described_class.new
+        node = Node.new('foo')
+        list.insert(node)
+        list.insert(Node.new('bar'))
+        list.insert(Node.new('baz'))
+
+        expect(list.tail).to eq(node)
       end
     end
   end

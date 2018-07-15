@@ -187,6 +187,22 @@ module FibonacciHeap
         expect(heap.pop).to be_nil
       end
 
+      it 'does not decrease the size of the heap if it is empty' do
+        heap = described_class.new
+
+        heap.pop
+
+        expect(heap.n).to be_zero
+      end
+
+      it 'returns the node if there is only one' do
+        heap = described_class.new
+        node = Node.new(1)
+        heap.insert(node)
+
+        expect(heap.pop).to eq(node)
+      end
+
       it 'returns the smallest node' do
         heap = described_class.new
         node = Node.new(1)
@@ -196,6 +212,49 @@ module FibonacciHeap
         heap.insert(node2)
 
         expect(heap.pop).to eq(node)
+      end
+
+      it 'sets a new min even if it is not at the head of the heap' do
+        heap = described_class.new
+        node = Node.new(2)
+        heap.insert(Node.new(1))
+        heap.insert(Node.new(4))
+        heap.insert(node)
+        heap.insert(Node.new(3))
+
+        heap.pop
+
+        expect(heap.min).to eq(node)
+      end
+
+      it 'consolidates non-min-heap-ordered roots' do
+        heap = described_class.new
+        node = Node.new(2)
+        node2 = Node.new(3)
+        heap.insert(Node.new(1))
+        heap.insert(node)
+        heap.insert(node2)
+
+        heap.pop
+
+        expect(heap.root_list).to contain_exactly(node)
+        expect(node.child_list).to contain_exactly(node2)
+        expect(heap.min).to eq(node)
+      end
+
+      it 'consolidates min-heap-ordered roots' do
+        heap = described_class.new
+        node = Node.new(2)
+        node2 = Node.new(3)
+        heap.insert(node2)
+        heap.insert(node)
+        heap.insert(Node.new(1))
+
+        heap.pop
+
+        expect(heap.root_list).to contain_exactly(node)
+        expect(node.child_list).to contain_exactly(node2)
+        expect(heap.min).to eq(node)
       end
 
       it 'works with more than two nodes' do
@@ -317,6 +376,35 @@ module FibonacciHeap
         expect(heap.min).to eq(node2)
       end
 
+      it 'updates the min of the heap even if it is a child of a root' do
+        heap = described_class.new
+        node = Node.new(2)
+        node2 = Node.new(3)
+        heap.insert(Node.new(1))
+        heap.insert(node)
+        heap.insert(node2)
+        heap.pop
+
+        heap.decrease_key(node2, 1)
+
+        expect(heap.min).to eq(node2)
+      end
+
+      it 'promotes a child to the root list' do
+        heap = described_class.new
+        node = Node.new(2)
+        node2 = Node.new(3)
+        heap.insert(Node.new(1))
+        heap.insert(node)
+        heap.insert(node2)
+        heap.pop
+
+        heap.decrease_key(node2, 1)
+
+        expect(node.child_list).to be_empty
+        expect(heap.root_list).to include(node2)
+      end
+
       it 'returns the decreased node' do
         heap = described_class.new
         node = Node.new(2)
@@ -396,6 +484,63 @@ module FibonacciHeap
         heap3 = heap.concat(heap2)
 
         expect(heap3.pop).to be_nil
+      end
+
+      it 'sets the size of the united heap' do
+        heap = described_class.new
+        heap.insert(Node.new(1))
+        heap2 = described_class.new
+        heap2.insert(Node.new(2))
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.n).to eq(2)
+      end
+
+      it 'uses the min of the first heap if it is smaller' do
+        heap = described_class.new
+        node = Node.new(1)
+        heap.insert(node)
+        heap2 = described_class.new
+        heap2.insert(Node.new(2))
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.min).to eq(node)
+      end
+
+      it 'uses the min of the second heap if it is smaller' do
+        heap = described_class.new
+        heap2 = described_class.new
+        node = Node.new(1)
+        heap.insert(Node.new(2))
+        heap2.insert(node)
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.min).to eq(node)
+      end
+
+      it 'uses the min of the first heap if the second is empty' do
+        heap = described_class.new
+        heap2 = described_class.new
+        node = Node.new(1)
+        heap.insert(node)
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.min).to eq(node)
+      end
+
+      it 'uses the min of the second heap if the first is empty' do
+        heap = described_class.new
+        heap2 = described_class.new
+        node = Node.new(1)
+        heap2.insert(node)
+
+        heap3 = heap.concat(heap2)
+
+        expect(heap3.min).to eq(node)
       end
     end
   end
