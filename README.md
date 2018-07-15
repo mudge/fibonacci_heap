@@ -25,10 +25,15 @@ require 'fibonacci_heap'
 heap = FibonacciHeap::Heap.new
 foo = FibonacciHeap::Node.new(1, 'foo')
 bar = FibonacciHeap::Node.new(0, 'bar')
+baz = FibonacciHeap::Node.new(2, 'baz')
 heap.insert(foo)
 heap.insert(bar)
+heap.insert(baz)
 heap.pop
 #=> #<FibonacciHeap::Node key=0 value="bar">
+heap.decrease_key(baz, 0)
+heap.pop
+#=> #<FibonacciHeap::Node key=0 value="baz">
 ```
 
 ## API Documentation
@@ -239,6 +244,12 @@ Return the current value of the node.
 ### `FibonacciHeap::InvalidKeyError`
 
 Raised when attempting to decrease a key but the new key is greater than the current key.
+
+## How is this different from [PQueue](https://github.com/rubyworks/pqueue) or [algorithms](https://github.com/kanwei/algorithms)' [`Containers::PriorityQueue`](http://kanwei.github.io/algorithms/classes/Containers/PriorityQueue.html)?
+
+PQueue and `Containers::PriorityQueue` are also implementations of a Priority Queue but my specific use-case required the ability to alter the priority (really, the `key`) of arbitrary nodes _after_ insertion. PQueue allows you to customise the comparison of nodes but this is only done at insertion time. Similarly, `Containers::PriorityQueue` does not allow you to alter the priority of a specific node (you can delete a single node by its priority but any other node with the same priority might be deleted instead).
+
+Furthermore, as the [reference text](#references) for my implementation often relies on the user having references to the nodes in the heap (e.g. for [`decrease_key`](#fibonacciheapheapdecrease_keyx) and [`delete`](#fibonacciheapheapdeletex)), I wanted to make the notion of the [`Node`](#fibonacciheapnode) explicit in the API. By having the user initialize [`Node`](#fibonacciheapnode)s themselves, it then makes the passing of [`Node`](#fibonacciheapnode)s to methods such as [`insert`](#fibonacciheapheapinsertx-k), [`delete`](#fibonacciheapheapdeletex) and [`decrease_key`](#fibonacciheapheapdecrease_keyx) more consistent.
 
 ## References
 
