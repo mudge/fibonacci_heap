@@ -410,6 +410,30 @@ module FibonacciHeap
 
         expect(list.tail).to eq(list2_tail)
       end
+
+      it 'preserves the head of the current list if the new is empty' do
+        list = described_class.new
+        list2 = described_class.new
+        list_tail = Node.new('list_tail')
+        list_head = Node.new('list_head')
+        list.insert(list_tail)
+        list.insert(list_head)
+
+        list.concat(list2)
+
+        expect(list.head).to eq(list_head)
+        expect(list.head.prev).to eq(list.sentinel)
+      end
+
+      it 'preserves the existing sentinel if the both lists are empty' do
+        list = described_class.new
+        list2 = described_class.new
+
+        list.concat(list2)
+
+        expect(list.sentinel.next).to eq(list.sentinel)
+        expect(list.sentinel.prev).to eq(list.sentinel)
+      end
     end
 
     describe '#head' do
